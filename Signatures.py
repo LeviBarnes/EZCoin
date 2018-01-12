@@ -18,6 +18,11 @@ def generate_keys():
 
     # get public key in OpenSSH format
     public_key = key.public_key();
+    #TODO push this serialization back into generate_keys()
+    #Need to figure a way to deserialize to get a viable _RSAPUblicKey type 
+    #from the public_bytes
+    #public_key = public_key.public_bytes(serialization.Encoding.OpenSSH, 
+    #    serialization.PublicFormat.OpenSSH).decode('utf-8')
 
     return key, public_key
 
@@ -38,6 +43,14 @@ def sign(message, private_key):
     return signature
 
 def verify(message, signature, public_key):
+    """ 
+    Signatures.verify(message, signature, private_key)
+    
+    Verifies that the provided signature corresponds to the given message and
+    private key. Hashes using SHA256. 'message' can be bytes or a string. Obtain 
+    an approriate private key by calling Signatures.generate_keys() and use
+    Signatures.sign() to sign a message
+    """
     if type(message) == type(b"Hello"):
         message = message.decode() 
     try:
@@ -66,9 +79,6 @@ if __name__ == "__main__":
         encryption_algorithm=serialization.NoEncryption())
 
     private_key_str = pem.decode('utf-8')
-    #TODO push this serialization back into generate_keys()
-    #Need to figure a way to deserialize to get a viable _RSAPUblicKey type 
-    #from the public_bytes
     public_key_str = public_key.public_bytes(serialization.Encoding.OpenSSH, 
         serialization.PublicFormat.OpenSSH).decode('utf-8')
 
@@ -88,6 +98,8 @@ if __name__ == "__main__":
     print()
     print('signature = ')
     print (signature)
+    #TODO find a way to represent signatures as int, str, hex and reliably 
+    #convert back to a signature suitable for verification
 
     print()
     if verify(message, signature, public_key):
