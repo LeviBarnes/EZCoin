@@ -66,6 +66,15 @@ def verify(message, signature, public_key):
         return True
     except crexceptions.InvalidSignature:
         return False
+
+def public_key_to_ssl(public_key):
+    """ 
+    Signatures.public_key_to_ssl(public_key)
+    
+    Return an OpenSSL string expressing the given _RSAPublicKey
+    """
+    return public_key.public_bytes(serialization.Encoding.OpenSSH, 
+        serialization.PublicFormat.OpenSSH).decode('utf-8')
     
 
 
@@ -84,8 +93,7 @@ if __name__ == "__main__":
         encryption_algorithm=serialization.NoEncryption())
 
     private_key_str = pem.decode('utf-8')
-    public_key_str = public_key.public_bytes(serialization.Encoding.OpenSSH, 
-        serialization.PublicFormat.OpenSSH).decode('utf-8')
+    public_key_str = public_key_to_ssl(public_key)
 
     print('Private key = ') 
     print(private_key_str)
