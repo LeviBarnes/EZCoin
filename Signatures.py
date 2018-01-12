@@ -1,6 +1,9 @@
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.backends import default_backend
+from datetime import date
 
 def generate_keys():
     # generate private/public key pair
@@ -12,6 +15,16 @@ def generate_keys():
         serialization.PublicFormat.OpenSSH)
 
     return key, public_key
+
+def sign(message, private_key):
+    if type(message) == type(b"Hello"):
+        message = message.decode() 
+    signature = private_key.sign(bytes(message, 'utf8'), 
+                                 padding.PSS(mgf=padding.MGF1(hashes.SHA256()),
+                                             salt_length=padding.PSS.MAX_LENGTH),
+                                 hashes.SHA256()                                 )
+    return signature
+
 
 if __name__ == "__main__":
     private_key, public_key = generate_keys()
@@ -28,4 +41,18 @@ if __name__ == "__main__":
     print(private_key_str)
     print('Public key = ')
     print(public_key_str)
+
+    message = ("This message was signed by " + public_key_str + 
+               " on " + date.today().strftime("%Y/%m/%d")       )
+    print()
+    print('Message = ')
+    print (message)
+
+    signature = sign(message, private_key)
+    signature = sign(b"This message is already bytes", private_key)
+
+    print()
+    print('signature = ')
+    print (signature)
+
     
