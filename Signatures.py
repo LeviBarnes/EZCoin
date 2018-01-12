@@ -6,6 +6,11 @@ from cryptography.hazmat.backends import default_backend
 from datetime import date
 
 def generate_keys():
+    """
+    Signatures.generate_keys()
+
+    returns a 2048-bit RSA private key and public key pair
+    """
     # generate private/public key pair
     key = rsa.generate_private_key(backend=default_backend(), public_exponent=65537, \
         key_size=2048)
@@ -17,15 +22,28 @@ def generate_keys():
     return key, public_key
 
 def sign(message, private_key):
+    """ 
+    Signatures.sign(message, private_key)
+    
+    signs the provided message using the private key using SHA256 and returns
+    the signature.  'message' can be bytes or a string. Obtain an approriate
+    private key by calling Signatures.generate_keys()
+    """
     if type(message) == type(b"Hello"):
         message = message.decode() 
-    signature = private_key.sign(bytes(message, 'utf8'), 
+    signature = private_key.sign(bytes(message, 'utf-8'), 
                                  padding.PSS(mgf=padding.MGF1(hashes.SHA256()),
                                              salt_length=padding.PSS.MAX_LENGTH),
                                  hashes.SHA256()                                 )
     return signature
 
 
+#This section will only run if Signatures is invoked directly from the
+#command line. i.e.
+#   > python3 Signatures.py
+#When the Signatures module is imported from another python file (i.e.
+#   import Signatures
+#this code is ignored
 if __name__ == "__main__":
     private_key, public_key = generate_keys()
     # decode to printable strings
