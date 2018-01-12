@@ -55,9 +55,9 @@ def verify(message, signature, public_key):
     if type(message) == type(b"Hello"):
         message = message.decode() 
     if type(public_key) == type("Hello"):
-        public_key = load_ssh_public_key(bytes(public_key_str,'utf-8'), default_backend())
+        public_key = load_ssh_public_key(bytes(public_key,'utf-8'), default_backend())
     if type(public_key) == type(b"Hello"):
-        public_key = load_ssh_public_key(public_key_str, default_backend())
+        public_key = load_ssh_public_key(public_key, default_backend())
     try:
         public_key.verify(signature, bytes(message, 'utf-8'), 
                           padding.PSS(mgf=padding.MGF1(hashes.SHA256()),
