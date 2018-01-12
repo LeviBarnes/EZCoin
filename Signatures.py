@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.backends import default_backend
 from datetime import date
 from cryptography import exceptions as crexceptions
+from cryptography.hazmat.primitives.serialization import load_ssh_public_key
 
 def generate_keys():
     """
@@ -53,6 +54,10 @@ def verify(message, signature, public_key):
     """
     if type(message) == type(b"Hello"):
         message = message.decode() 
+    if type(public_key) == type("Hello"):
+        public_key = load_ssh_public_key(bytes(public_key_str,'utf-8'), default_backend())
+    if type(public_key) == type(b"Hello"):
+        public_key = load_ssh_public_key(public_key_str, default_backend())
     try:
         public_key.verify(signature, bytes(message, 'utf-8'), 
                           padding.PSS(mgf=padding.MGF1(hashes.SHA256()),
@@ -98,14 +103,18 @@ if __name__ == "__main__":
     print()
     print('signature = ')
     print (signature)
-    #TODO find a way to represent signatures as int, str, hex and reliably 
-    #convert back to a signature suitable for verification
 
     print()
     if verify(message, signature, public_key):
         print("String message verified")
     else:
         print("Verification of string message FAILED")
+
+    #This time, pass the public key as an OpenSSL string
+    if verify(message, signature, public_key_str):
+        print("String message verified using OpenSSL string")
+    else:
+        print("Verification of string message FAILED using OpenSSL string")
 
     signature = sign(b"This message is already bytes", private_key)
     if (verify(b"This message is already bytes", signature, public_key)):
