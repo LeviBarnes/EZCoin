@@ -1,6 +1,5 @@
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
-import pickle
 
 class CBlock:
    data = None
@@ -29,7 +28,7 @@ if __name__ == "__main__":
    b2 = CBlock(b"This block has data in bytes", b1) 
    b3 = CBlock(445, b2) 
 
-   myfile = open("blockchain.dat", "wb")
-   pickle.dump(b3, myfile)
+   if b3.previousBlock.previousBlock.computeHash() != b3.previousBlock.previousHash:
+      print("ERROR: Bad hashes")
 
    
