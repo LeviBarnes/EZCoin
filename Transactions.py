@@ -2,20 +2,31 @@ import BlockChain
 import Signatures
 
 class Tx:
-    inputs = []
-    outputs = []
-    reqd_sigs = []
-    sigs = []
-    def __init__(self, _inputs=None, _outputs=None, _reqd_sigs=None,
-                 _sigs=None):
-        if _inputs != None:
-            self.inputs = _inputs
-        if _inputs != None:
-            self.outputs = _outputs
-        if _inputs != None:
-            self.reqd_sigs = _reqd_sigs
-        if _inputs != None:
-            self.sigs = _sigs
+    def __init__(self):
+        self.inputs = []
+        self.outputs = [] #_outputs
+        self.reqd_sigs = [] #_reqd_sigs
+        self.sigs = [] #_sigs
+    def __repr__(self):
+        outstr=""
+        if self.inputs != None:
+            outstr = outstr + "Inputs:\n"
+            for i in self.inputs:
+                outstr = outstr + "   " + str(i[0]) + " -- " + str(i[1]) + "\n"
+        if self.outputs != None:
+            outstr = outstr + "Outputs:\n"
+            for o in self.outputs:
+                outstr = outstr + "   " + str(o[0]) + " -- " + str(o[1]) + "\n"
+        if self.reqd_sigs != None:
+            outstr = outstr + "Required sigs:\n"
+            for r in self.reqd_sigs:
+                outstr = outstr + "   " + str(r) + "\n"
+        if self.sigs != None:
+            outstr = outstr + "Signatures:\n"
+            for s in self.sigs:
+                outstr = outstr + "   " + str(s) + "\n"
+        return outstr
+                
     def add_input(self, public, amount):
         """
         add_input(public, amount)
@@ -125,5 +136,4 @@ if __name__ == "__main__":
         print ("Tx2(mod) is valid")
     else:
         print ("Tx2(mod) is invalid")
-    
     
