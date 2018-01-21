@@ -104,6 +104,19 @@ class Tx:
             if this_valid == False:
                 valid = False
         return valid
+    def check_amts(self):
+        amt_in = 0
+        amt_out = 0
+        for i in self.inputs:
+            amt_in  = amt_in + i[1]
+        for o in self.outputs:
+            amt_out = amt_out + o[1]
+        if amt_in >= amt_out:
+            return True
+        else:
+            return False
+    def isvalid(self):
+        return self.check_amts() and self.check_sigs()
 
     
 if __name__ == "__main__":
@@ -116,24 +129,34 @@ if __name__ == "__main__":
     Tx1.add_output(pu2, 1)
     Tx1.add_output(pu3, 1)
     Tx1.sign(pr1)
-    if Tx1.check_sigs():
+    if Tx1.isvalid():
         print ("Tx1 is valid")
     else:
         print ("Tx1 is invalid")
+
     Tx2 = Tx()
     Tx2.add_input(pu1, 2)
-    Tx2.add_output(pu2, 1)
-    Tx2.add_output(pu3, 1)
-    Tx2.add_reqd(pu2)
-    Tx2.sign(pr2)
+    Tx2.add_output(pu2, 2.6)
     Tx2.sign(pr1)
-    if Tx2.check_sigs():
+    if Tx2.isvalid():
         print ("Tx2 is valid")
     else:
         print ("Tx2 is invalid")
-    Tx2.add_output(pu3,1)
-    if Tx2.check_sigs():
-        print ("Tx2(mod) is valid")
+
+    Tx3 = Tx()
+    Tx3.add_input(pu1, 2)
+    Tx3.add_output(pu2, 1)
+    Tx3.add_output(pu3, 1)
+    Tx3.add_reqd(pu2)
+    Tx3.sign(pr2)
+    Tx3.sign(pr1)
+    if Tx3.isvalid():
+        print ("Tx3 is valid")
     else:
-        print ("Tx2(mod) is invalid")
+        print ("Tx3 is invalid")
+    Tx3.add_output(pu3,1)
+    if Tx3.isvalid():
+        print ("Tx3(mod) is valid")
+    else:
+        print ("Tx3(mod) is invalid")
     
