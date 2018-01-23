@@ -8,7 +8,13 @@ pr1,pu1 = sig.generate_keys()
 pr2,pu2 = sig.generate_keys()
 pr3,pu3 = sig.generate_keys()
 
-Block=TxBlock()
+root=TxBlock()
+Tx0=Tx()
+Tx0.add_input(pu1,4)
+Tx0.add_output(pu2,2)
+Tx0.sign(pr1)
+
+Block=TxBlock(root)
 Tx1=Tx()
 Tx1.add_input(pu1,1)
 Tx1.add_output(pu2,0.33)
@@ -36,4 +42,20 @@ for q in range(128*128):
         print("Nonce = '" + bytes([n,m]).decode()+"'("+str(n)+", "+str(m)+")")
         break
 
+B2=TxBlock(Block)
+
+if Block.isvalid(B2.previousHash):
+    print("Child block generates valid hash.")
+else:
+    print("ERROR: Child block has wrong hash.")
+Tx3=Tx()
+Tx3.add_input(pu2,1)
+Tx3.add_output(pu1,1)
+Tx3.sign(pr2)
+Block.addTx(Tx3)
+
+if Block.isvalid(B2.previousHash):
+    print("ERROR: Modified block hash still matches")
+else:
+    print("Tamper detected.")
 

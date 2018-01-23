@@ -30,18 +30,22 @@ class CBlock:
       self.previousBlock = previousBlock
 
 class TxBlock(CBlock):
-   def __init__(self):
+   def __init__(self, previousBlock=None):
       nonce = 'aaaaaaaaaaaaaaaaa'
       self.data = [nonce]
+      self.previousBlock = previousBlock
    def addTx(self, tx_in):
       self.data.append(tx_in)
    def newNonce(self, _nonce):
       self.data[0] = _nonce
-   def isvalid(self):
+   def isvalid(self, check_hash=None):
       valid = True
       for tx in self.data[1:]:
          if not tx.isvalid():
             valid = False
+      if check_hash != None and self.computeHash() != check_hash:
+         valid = False
+      #One leading zero
       if self.computeHash()[0] != 0:
          valid = False
       return valid
