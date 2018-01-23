@@ -23,3 +23,17 @@ try:
     print ("Successfully json serialized Tx1")
 except:
     print("Couldn't json serialize Tx1")
+
+from BlockChain import TxBlock
+
+B = TxBlock()
+B.addTx(Tx1)
+
+Tx2 = Tx()
+Tx2.add_input(pu1, 1)
+Tx2.add_output(pu2, 1.4)
+Tx2.sign(pr1)
+B.addTx(Tx2)
+
+foo = pickle.dumps(B)
+

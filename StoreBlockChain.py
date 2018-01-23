@@ -32,22 +32,28 @@ if __name__ == "__main__":
 
    tmp = top
    nblocks = 1
+   err = False
    while tmp.previousBlock != None:
       nblocks = nblocks + 1
       if top.previousBlock.computeHash() != top.previousHash:
          print ("Bad previousHash for block with data " + str(top.data))
+         err = True
       tmp = tmp.previousBlock
    if nblocks != 3:
       print ("Expected 3 blocks. Found " + str(nblocks))
+      err = True
 
    if top.previousBlock.previousBlock.data != "This is the root block":
       print ("Wrong data (" + str(top.previousBlock.previousBlock.data) + " in top-2")
- 
+      err = True
    onemore = CBlock("Adding this new block", top)
    saveBC("loadtest_out.dat", onemore)
 
    if filecmp.cmp("loadtest_out.dat", "loadtest_golden.dat"):
       print ("New saved file does not match")
+      err = True
+   if not err:
+      print ("All tests pass")
 
    
    
