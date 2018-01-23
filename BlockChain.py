@@ -33,6 +33,8 @@ class TxBlock(CBlock):
    def __init__(self, previousBlock=None):
       nonce = 'aaaaaaaaaaaaaaaaa'
       self.data = [nonce]
+      if previousBlock != None:
+         self.previousHash = previousBlock.computeHash()
       self.previousBlock = previousBlock
    def addTx(self, tx_in):
       self.data.append(tx_in)
