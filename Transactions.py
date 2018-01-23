@@ -1,5 +1,6 @@
 import BlockChain
 import Signatures
+from cryptography.hazmat.backends.openssl.rsa import _RSAPublicKey
 
 class Tx:
     def __init__(self):
@@ -33,6 +34,8 @@ class Tx:
 
         add one input to the tx. Takes a public addres and an amount
         """
+        if type(public) == _RSAPublicKey:
+            public = Signatures.public_key_to_ssl(public)
         self.inputs.append((public, amount))
         self.reqd_sigs.append(public)
     def add_output(self,public, amount):
@@ -41,6 +44,8 @@ class Tx:
 
         add one input to the tx. Takes a public addres and an amount
         """
+        if type(public) == _RSAPublicKey:
+            public = Signatures.public_key_to_ssl(public)
         self.outputs.append((public, amount))
     def add_reqd(self,public):
         """
