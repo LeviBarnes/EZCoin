@@ -1,7 +1,7 @@
 from Transactions import Tx
 from BlockChain import TxBlock
 import Signatures as sig
-
+from Miner import mine
 
 
 pr1,pu1 = sig.generate_keys()
@@ -37,15 +37,7 @@ Tx3.add_output(pu1,1)
 Tx3.sign(pr2)
 Block.addTx(Tx3)
 
-for q in range(128*128):
-    n = q//128
-    m = q%128
-    Block.newNonce(bytes([n,m]).decode())
-    thisHashZero = Block.computeHash()[0]
-    if Block.isvalid():
-        print("Found a block!")
-        print("Nonce = '" + bytes([n,m]).decode()+"'("+str(n)+", "+str(m)+")")
-        break
+mine(Block)
 if not Block.isvalid():
     print("ERROR: Failed to find a valid nonce.")
 
