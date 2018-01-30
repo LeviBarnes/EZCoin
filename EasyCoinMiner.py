@@ -7,6 +7,11 @@ import Signatures
 from Transactions import Tx
 from Miner import mine
 
+class EasyCoinManifest:
+    def __init__(self, obj):
+        self.kind = type(obj)
+        self.sz = len(pickle.dumps(obj))
+
 #Makes some blocks, then sends them via socket
 pr1,pu1 = Signatures.generate_keys()
 pr2,pu2 = Signatures.generate_keys()
@@ -59,19 +64,32 @@ for B in [B1,B2,B3]:
     mine(B)
     try:
 
+        # Send manifest
+        message = pickle.dumps(EasyCoinManifest(B))
+        print('sending {!r}',format(message))
+        sock.sendall(message)
+
+        # Recv acknowledgement
+        data = sock.recv(8)
+        if data != b"ACK_MFST":
+            raise RuntimeError("No acknowledgement from server")
         # Send data
         message = pickle.dumps(B)
         print('sending {!r}'.format(message))
         sock.sendall(message)
 
-        # Look for the response
-        amount_received = 0
-        amount_expected = len(message)
+        data = sock.recv(8)
+        if data != b"ACK_MMSG":
+            raise RuntimeError("No acknowledgment from server")
 
-        while amount_received < amount_expected:
-            data = sock.recv(16)
-            amount_received += len(data)
-            print('received {!r}'.format(data))
+#        # Look for the response
+#        amount_received = 0
+#        amount_expected = len(message)
+
+#        while amount_received < amount_expected:
+#            data = sock.recv(4)
+#            amount_received += len(data)
+#            print('received {!r}'.format(data))
 
     finally:
         print('closing socket')
