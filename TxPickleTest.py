@@ -35,5 +35,10 @@ Tx2.add_output(pu2, 1.4)
 Tx2.sign(pr1)
 B.addTx(Tx2)
 
-foo = pickle.dumps(B)
+try:
+    foo = pickle.dumps(B)
+    print ("Successfully pickle serialized block B")
+except:
+    print("Couldn't pickle serialize a block")
+print(B)
 
