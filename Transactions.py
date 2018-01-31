@@ -110,17 +110,33 @@ class Tx:
                 valid = False
         return valid
     def check_amts(self):
+        """
+        Tx.check_amts() -> bool
+
+        checks that no input or output is negative and that the total
+        input is greater than or equal to total output
+        """
         amt_in = 0
         amt_out = 0
         for i in self.inputs:
             amt_in  = amt_in + i[1]
+            if i[1]< 0:
+                return False
         for o in self.outputs:
             amt_out = amt_out + o[1]
+            if o[1]< 0:
+                return False
         if amt_in >= amt_out:
             return True
         else:
             return False
     def isvalid(self):
+        """
+        Tx.isvalid() -> bool
+
+        checks both the signatures and the input/output
+        amounts
+        """
         return self.check_amts() and self.check_sigs()
 
     

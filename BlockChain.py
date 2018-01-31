@@ -34,10 +34,30 @@ class TxBlock(CBlock):
       nonce = 'aaaaaaaaaaaaaaaaa'
       self.data = [nonce]
    def addTx(self, tx_in):
+      """
+      TxBlock.addTx(Tx)
+
+      Adds the given transaction to the block.
+      """
       self.data.append(tx_in)
    def newNonce(self, _nonce):
+      """
+      TxBlock.newNonce(_nonce)
+
+      Replaces the block nonce with the new nonce
+      _nonce can be any data that can be cast as a string
+      """
       self.data[0] = _nonce
    def isvalid(self):
+      """
+      TxBlock.isvalid() -> bool
+
+      Checks the transactions and nonce of the block
+      Return True for a valid block
+      """
+      #TODO Allow miner to take transaction fees
+      # sum of *all* inputs from *all* tx's must still be >= sum of
+      # *all* outputs - the mining reward
       valid = True
       for tx in self.data[1:]:
          if not tx.isvalid():
