@@ -8,7 +8,7 @@ pr1,pu1 = sig.generate_keys()
 pr2,pu2 = sig.generate_keys()
 pr3,pu3 = sig.generate_keys()
 
-root=TxBlock()
+root=TxBlock(None)
 Tx0=Tx()
 Tx0.add_input(pu1,4)
 Tx0.add_output(pu2,2)

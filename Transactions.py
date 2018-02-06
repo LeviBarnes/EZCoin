@@ -175,7 +175,7 @@ if __name__ == "__main__":
         print ("Tx3 is valid")
     else:
         print ("Tx3 is invalid")
-    Tx3.add_output(pu3,1)
+    Tx3.add_output(pu2,1)
     if Tx3.isvalid():
         print ("Tx3(mod) is valid")
     else:

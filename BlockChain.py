@@ -30,9 +30,9 @@ class CBlock:
       self.previousBlock = previousBlock
 
 class TxBlock(CBlock):
-   def __init__(self):
+   def __init__(self, previousBlock):
       nonce = 'aaaaaaaaaaaaaaaaa'
-      self.data = [nonce]
+      super(TxBlock, self).__init__([nonce], previousBlock)
    def addTx(self, tx_in):
       """
       TxBlock.addTx(Tx)
@@ -48,7 +48,7 @@ class TxBlock(CBlock):
       _nonce can be any data that can be cast as a string
       """
       self.data[0] = _nonce
-   def isvalid(self):
+   def isvalid(self,chkhash=None):
       """
       TxBlock.isvalid() -> bool
 
@@ -63,6 +63,8 @@ class TxBlock(CBlock):
          if not tx.isvalid():
             valid = False
       if self.computeHash()[0] != 0:
+         valid = False
+      if chkhash != None and self.computeHash() != chkhash:
          valid = False
       return valid
 
