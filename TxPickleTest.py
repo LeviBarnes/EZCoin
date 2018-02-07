@@ -26,7 +26,7 @@ except:
 
 from BlockChain import TxBlock
 
-B = TxBlock()
+B = TxBlock(None)
 B.addTx(Tx1)
 
 Tx2 = Tx()
