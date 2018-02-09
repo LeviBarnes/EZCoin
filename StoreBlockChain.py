@@ -1,5 +1,9 @@
 from BlockChain import CBlock
 import pickle
+import Signatures
+
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
 
 def loadBC(filename):
    if not isinstance(filename, str):
@@ -25,6 +29,18 @@ def saveBC(filename, headBlock):
    myfile.close()
    return
 
+def saveKeys(filename, private, passwd = None):
+   pem = Signatures.private_key_to_pem(private, passwd)
+   fout = open(filename, 'wb')
+   pickle.dump(pem, fout)
+   fout.close()
+   
+def loadKeys(filename, passwd = None):
+   fin = open(filename, 'rb')
+   pem = pickle.load(fin)   
+   private = Signatures.pem_to_private_key(pem, passwd)
+   public = private.public_key()
+   return private, public
 
 if __name__ == "__main__":
    import filecmp
@@ -52,13 +68,22 @@ if __name__ == "__main__":
    if filecmp.cmp("loadtest_out.dat", "loadtest_golden.dat"):
       print ("New saved file does not match")
       err = True
+
+   pr1,pu1 = Signatures.generate_keys()
+   saveKeys("keysave.dat", pr1, "R$3x&11")
+   pr_new, pu_new = loadKeys("keysave.dat", "R$3x&11")
+   message = b"Levi was here"
+   sig = Signatures.sign(message, pr1)
+   if not Signatures.verify(message, sig, pu_new):
+      print ("Loaded keys are bad.")
+      err = True
+   
+
+
+
    if not err:
       print ("All tests pass")
 
-   
-   
-   
-   
 
    
 
