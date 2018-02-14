@@ -1,6 +1,8 @@
 import socket
 import pickle
 
+port = 10000
+
 class EasyCoinManifest:
     def __init__(self, obj):
         self.kind = type(obj)
@@ -11,7 +13,7 @@ def newClientSocket():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect the socket to the port where the server is listening
-    server_address = ('localhost', 10000)
+    server_address = ('localhost', port)
     print('connecting to {} port {}'.format(*server_address))
     sock.connect(server_address)
     return sock
@@ -47,7 +49,7 @@ def openServerSocket():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to the port
-    server_address = ('localhost', 10000)
+    server_address = ('localhost', port)
     print('starting up on {} port {}'.format(*server_address))
     sock.bind(server_address)
 
@@ -55,7 +57,15 @@ def openServerSocket():
     sock.listen(1)
     return sock
 
-def recvNewBlock(serverSocket):
+def recvNewObject(serverSocket):
+    """
+    recvNewObject(socket)
+
+    Receives a new object over the given socket (assumed listening)
+    The server first expects a manifest which consists of a type and size
+    On receipt of a valid manifest, sends ACK_MFST. Then, receives and
+    pickle loads the object and returns
+    """
     # Wait for a connection
     print('waiting for a connection')
     connection, client_address = serverSocket.accept()
@@ -67,6 +77,10 @@ def recvNewBlock(serverSocket):
         manifest = pickle.loads(manifest_d)
         expected = manifest.sz
         print ("Expecting a " +str(manifest.kind) + " of size " + str(expected))
+    except:
+        raise RuntimeError("Receipt of mainfest failed.")
+        return None
+    try:
 
         connection.send(b"ACK_MFST")
         data_in = 0
@@ -84,7 +98,7 @@ def recvNewBlock(serverSocket):
             all_data = all_data + data
             data_in = data_in + len(data)
     except:
-        raise RuntimeError("Receipt of block failed.")
+        raise RuntimeError("Receipt of object failed.")
         return None
     finally:
         print ("received " + str(data_in) + " characters. Acknowledging...")

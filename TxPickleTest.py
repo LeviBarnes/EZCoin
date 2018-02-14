@@ -40,5 +40,5 @@ try:
     print ("Successfully pickle serialized block B")
 except:
     print("Couldn't pickle serialize a block")
-print(B)
+
 

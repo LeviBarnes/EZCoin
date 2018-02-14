@@ -21,7 +21,7 @@ Tx1.add_output(pu4,0.2)
 Tx1.sign(pr1)
 
 #B1 is a valid block. It's root
-B1 = TxBlock()
+B1 = TxBlock(None)
 B1.addTx(Tx1)
 
 #Tx2 is a valid Tx
@@ -31,7 +31,7 @@ Tx2.add_output(pu2,2.8)
 Tx2.add_output(pu4,0.2)
 Tx2.sign(pr1)
 
-B2 = TxBlock()
+B2 = TxBlock(None)
 B2.addTx(Tx2)
 
 #Tx2 is invalid since it's not signed with pr4
@@ -49,8 +49,11 @@ Tx4.add_input(pu1,0.4)
 Tx4.add_output(pu2,0.4)
 Tx4.sign(pr1)
 
-B3 = TxBlock()
+B3 = TxBlock(None)
 B3.addTx(Tx4)
+
+cSocket = newClientSocket()
+sendMessage(Tx4, cSocket)
 
 for B in [B1,B2,B3]:
     #Mine for a valid nonce
