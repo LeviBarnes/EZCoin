@@ -75,7 +75,33 @@ def public_key_to_ssl(public_key):
     """
     return public_key.public_bytes(serialization.Encoding.OpenSSH, 
         serialization.PublicFormat.OpenSSH).decode('utf-8')
+
+def private_key_to_pem(private_key, passwd = None):
+    """
+    Signatures.private_key_to_pem(private, password=None)
+
+    Returns the PEM for the given private key
+    """
+    if passwd != None:
+        algo = serialization.BestAvailableEncryption(bytes(str(passwd),'utf-8'))
+    else:
+        algo = serialization.NoEncryption()
     
+    return private_key.private_bytes(encoding = serialization.Encoding.PEM,
+                                     format = serialization.PrivateFormat.TraditionalOpenSSL,
+                                     encryption_algorithm = algo)
+
+def pem_to_private_key(pem_in, passwd = None):
+    """
+    Signatures.pem_to_private_key(pem, passwd = None)
+
+    Extract the _RSAPrivateKey instance from a PEM
+    """
+    if passwd != None:
+        passwd = bytes(str(passwd),'utf-8')
+    return serialization.load_pem_private_key(pem_in,
+                                              passwd,
+                                              default_backend())
 
 
 #This section will only run if Signatures is invoked directly from the
@@ -86,11 +112,8 @@ def public_key_to_ssl(public_key):
 #this code is ignored
 if __name__ == "__main__":
     private_key, public_key = generate_keys()
-    # decode to printable strings
     # get private key in PEM container format
-    pem = private_key.private_bytes(encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption())
+    pem = private_key_to_pem(private_key, b"H%r77y")
 
     private_key_str = pem.decode('utf-8')
     public_key_str = public_key_to_ssl(public_key)
@@ -106,6 +129,7 @@ if __name__ == "__main__":
     print('Message = ')
     print (message)
 
+    private_key = pem_to_private_key(bytes(private_key_str,'utf-8'),b"H%r77y")
     signature = sign(message, private_key)
 
     print()
