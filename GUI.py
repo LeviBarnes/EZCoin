@@ -4,6 +4,11 @@ import time
 import pickle
 from BlockChain import TxBlock
 import FileIO
+from EZCoinSocket import sendMessage, recvNewObject
+from EZCoinSocket import newClientSocket, newServerSocket
+from Transactions import Tx
+
+txfee = 0.01
 
 def keyGen():
     pass
@@ -21,7 +26,14 @@ def send(f):
     C=tk.Label(popup, text="...")
     C.grid(row=2,column=0)
     popup.update()
-    time.sleep(2)
+    newTx = Tx()
+    newTx.add_output(whom_to, how_much)
+    newTx.add_input(public, how_much*(1+txfee))
+    newTx.sign(private)
+
+    cSock = newClientSocket()
+    sendMessage(newTx, cSock)
+    
     A.destroy()
     B.destroy()
     C.destroy()

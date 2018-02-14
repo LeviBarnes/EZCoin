@@ -54,9 +54,9 @@ def sendMessage(obj, clientSocket):
         raise RuntimeError("sendMessage failed")
         return -1
 
-def openServerSocket():
+def newServerSocket():
     """
-    openServerSocket() -> socket
+    newServerSocket() -> socket
 
     Opens and returns a new server socket
     """

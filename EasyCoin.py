@@ -21,7 +21,7 @@ def handleBlock(newBlock, lastBlock):
 Tx_list = []
 lastBlock = None
 recd = 0
-sSocket = openServerSocket()
+sSocket = newServerSocket()
 
 #Recv 4 objects
 for iter in range(4):
