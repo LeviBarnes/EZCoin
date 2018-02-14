@@ -20,6 +20,7 @@ def loadBC(filename):
    return returnval
 
 def saveBC(filename, headBlock):
+   print (type(headBlock))
    if not isinstance(headBlock, CBlock):
       raise TypeError("Argument 1 to saveBC must be a CBlock")
    if not isinstance(filename, str):
@@ -40,6 +41,7 @@ def loadKeys(filename, passwd = None):
    pem = pickle.load(fin)   
    private = Signatures.pem_to_private_key(pem, passwd)
    public = private.public_key()
+   fin.close()
    return private, public
 
 if __name__ == "__main__":

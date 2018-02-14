@@ -1,7 +1,7 @@
 for f in ["Signatures.py",
           "Transactions.py",
           "BlockChain.py",
-          "StoreBlockChain.py",
+          "FileIO.py",
           "Miner.py",
           "TxBlockTest.py",
           "TxPickleTest.py"

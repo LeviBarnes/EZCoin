@@ -168,3 +168,4 @@ if __name__ == "__main__":
       print ("ERROR! Wrong balance ("+ str(B1.getBalance(pu2)) +") for pu2")
    else:
       print ("Right balance ("+ str(B1.getBalance(pu2)) +") for pu2")
+   
