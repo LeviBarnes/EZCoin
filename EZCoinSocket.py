@@ -7,6 +7,11 @@ class EasyCoinManifest:
         self.sz = len(pickle.dumps(obj))
 
 def newClientSocket():
+    """
+    EZCoinSocket.newClientSocket() -> socket
+
+    Opens and returns a new client socket for sending messages
+    """
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -17,6 +22,11 @@ def newClientSocket():
     return sock
 
 def sendMessage(obj, clientSocket):
+    """
+    sendMessage(obj, clientSocket)
+
+    Sends a pickle-able object over the given socket.
+    """
     try:
         # Send manifest
         message = pickle.dumps(EasyCoinManifest(obj))
@@ -43,6 +53,11 @@ def sendMessage(obj, clientSocket):
         return -1
 
 def openServerSocket():
+    """
+    openServerSocket() -> socket
+
+    Opens and returns a new server socket
+    """
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -56,6 +71,11 @@ def openServerSocket():
     return sock
 
 def recvNewBlock(serverSocket):
+    """
+    recvNewBlock(serverSocket)
+
+    Receives and returns a block over the given serverSocket
+    """
     # Wait for a connection
     print('waiting for a connection')
     connection, client_address = serverSocket.accept()

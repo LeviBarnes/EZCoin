@@ -18,6 +18,11 @@ class CBlock:
    previousHash = None
    previousBlock = None
    def computeHash(self):
+      """
+      CBlock.computeHash() -> hash (bytes)
+
+      Computes the SHA-256 hash of the block and returns it
+      """
       digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
       #TODO bytes only works for strings?
       thedata = self.data
