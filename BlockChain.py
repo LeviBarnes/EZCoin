@@ -18,6 +18,11 @@ class CBlock:
    previousHash = None
    previousBlock = None
    def computeHash(self):
+      """
+      CBlock.computeHash() -> hash (bytes)
+
+      Computes the SHA-256 hash of the block and returns it
+      """
       digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
       #TODO bytes only works for strings?
       thedata = self.data
@@ -168,3 +173,4 @@ if __name__ == "__main__":
       print ("ERROR! Wrong balance ("+ str(B1.getBalance(pu2)) +") for pu2")
    else:
       print ("Right balance ("+ str(B1.getBalance(pu2)) +") for pu2")
+   
