@@ -1,7 +1,8 @@
 import socket
 import pickle
 
-default_port = 10000
+default_port = 10103
+timeout = 10
 
 class EasyCoinManifest:
     def __init__(self, obj):
@@ -22,7 +23,7 @@ def newClientSocket(port=None):
     # Connect the socket to the port where the server is listening
     server_address = ('localhost', port)
     print('connecting to {} port {}'.format(*server_address))
-    sock.settimeout(15)
+    sock.settimeout(timeout)
     try:
         sock.connect(server_address)
     except:
@@ -78,6 +79,7 @@ def newServerSocket(port=None):
     sock.bind(server_address)
 
     # Listen for incoming connections
+    sock.listen(1)
     return sock
 
 
@@ -91,10 +93,9 @@ def recvNewObject(serverSocket):
     pickle loads the object and returns
     """
     # Wait for a connection
-    serverSocket.settimeout(30)
-    print('waiting for a connection')
+    serverSocket.settimeout(timeout)
+    print('waiting for a connection on socket ' + str(serverSocket.getsockname()))
     try:
-        serverSocket.listen(1)
         connection, client_address = serverSocket.accept()
     except:
         print("No connection.")
