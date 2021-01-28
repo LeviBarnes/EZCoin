@@ -1,26 +1,34 @@
 import socket
 import pickle
 
-port = 10000
+default_port = 10103
+timeout = 10
 
 class EasyCoinManifest:
     def __init__(self, obj):
         self.kind = type(obj)
         self.sz = len(pickle.dumps(obj))
 
-def newClientSocket():
+def newClientSocket(port=None):
     """
-    EZCoinSocket.newClientSocket() -> socket
+    EZCoinSocket.newClientSocket(port=default_port) -> socket
 
     Opens and returns a new client socket for sending messages
     """
+    #if port==None:
+    #    port = default_port
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect the socket to the port where the server is listening
     server_address = ('localhost', port)
     print('connecting to {} port {}'.format(*server_address))
-    sock.connect(server_address)
+    sock.settimeout(timeout)
+    try:
+        sock.connect(server_address)
+    except:
+        print("No server on port " + str(port))
+        return None
     return sock
 
 def sendMessage(obj, clientSocket):
@@ -54,12 +62,14 @@ def sendMessage(obj, clientSocket):
         raise RuntimeError("sendMessage failed")
         return -1
 
-def openServerSocket():
+def newServerSocket(port=None):
     """
-    openServerSocket() -> socket
+    newServerSocket(port=default_port) -> socket
 
     Opens and returns a new server socket
     """
+    if port==None:
+        port = default_port
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -83,8 +93,14 @@ def recvNewObject(serverSocket):
     pickle loads the object and returns
     """
     # Wait for a connection
-    print('waiting for a connection')
-    connection, client_address = serverSocket.accept()
+    serverSocket.settimeout(timeout)
+    print('waiting for a connection on socket ' + str(serverSocket.getsockname()))
+    try:
+        connection, client_address = serverSocket.accept()
+    except:
+        print("No connection.")
+        serverSocket.settimeout(None)
+        return None
     all_data = b""
     try:
         print('connection from', client_address)
@@ -95,6 +111,7 @@ def recvNewObject(serverSocket):
         print ("Expecting a " +str(manifest.kind) + " of size " + str(expected))
     except:
         raise RuntimeError("Receipt of mainfest failed.")
+        serverSocket.settimeout(None)
         return None
     try:
 
@@ -115,6 +132,7 @@ def recvNewObject(serverSocket):
             data_in = data_in + len(data)
     except:
         raise RuntimeError("Receipt of object failed.")
+        serverSocket.settimeout(None)
         return None
     finally:
         print ("received " + str(data_in) + " characters. Acknowledging...")
@@ -122,6 +140,7 @@ def recvNewObject(serverSocket):
         print("Unpickling block ")
         newBlock = pickle.loads(all_data)
         connection.close()
+        serverSocket.settimeout(None)
     return newBlock
 
 

@@ -4,7 +4,8 @@ for f in ["Signatures.py",
           "FileIO.py",
           "Miner.py",
           "TxBlockTest.py",
-          "TxPickleTest.py"
+          "TxPickleTest.py",
+          "CommTest.py"
           ]:
     print("***** Executing " + f + " ********")
     prog = open(f)

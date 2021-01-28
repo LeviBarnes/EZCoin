@@ -2,16 +2,16 @@
 import socket
 import sys
 
-class someClass:
-    def __init__(self):
-        self.foo = "ABC"
-        self.bar = 123
-        
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Connect the socket to the port where the server is listening
-server_address = ('localhost', 10000)
+host = 'localhost'
+port=10000
+if len(sys.argv) > 1:
+    host,port = sys.argv[1].split(':')
+    port = int(port)
+server_address = (host,port)
 print('connecting to {} port {}'.format(*server_address))
 sock.connect(server_address)
 
@@ -19,7 +19,7 @@ try:
 
     # Send data
     #message = b'This is the message.  It will be repeated.'
-    message = 12345
+    message = "Echo this message:"
     print('sending {!r}'.format(message))
     sock.sendall(message)
 

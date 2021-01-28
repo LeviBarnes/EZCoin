@@ -6,7 +6,12 @@ import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind the socket to the port
-server_address = ('localhost', 10000)
+host = 'localhost'
+port=10000
+if len(sys.argv) > 1:
+    host,port = sys.argv[1].split(':')
+    port = int(port)
+server_address = (host,port)
 print('starting up on {} port {}'.format(*server_address))
 sock.bind(server_address)
 
